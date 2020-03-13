@@ -24,6 +24,7 @@ package de.appplant.cordova.plugin.notification.trigger;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 import static de.appplant.cordova.plugin.notification.trigger.DateTrigger.Unit.DAY;
 import static de.appplant.cordova.plugin.notification.trigger.DateTrigger.Unit.HOUR;
@@ -31,9 +32,7 @@ import static de.appplant.cordova.plugin.notification.trigger.DateTrigger.Unit.M
 import static de.appplant.cordova.plugin.notification.trigger.DateTrigger.Unit.MONTH;
 import static de.appplant.cordova.plugin.notification.trigger.DateTrigger.Unit.WEEK;
 import static de.appplant.cordova.plugin.notification.trigger.DateTrigger.Unit.YEAR;
-import static java.util.Calendar.DAY_OF_WEEK;
-import static java.util.Calendar.WEEK_OF_MONTH;
-import static java.util.Calendar.WEEK_OF_YEAR;
+import static java.util.Calendar.*;
 
 /**
  * Trigger for date matching components.
@@ -91,6 +90,7 @@ public class MatchTrigger extends IntervalTrigger {
      * Gets the date from where to start calculating the initial trigger date.
      */
     private Calendar getBaseTriggerDate(Date date) {
+
         Calendar cal = getCal(date);
 
         cal.set(Calendar.SECOND, 0);
@@ -130,6 +130,7 @@ public class MatchTrigger extends IntervalTrigger {
      * @return null if there's none trigger date.
      */
     private Date getTriggerDate (Date base) {
+
         Calendar cal = getBaseTriggerDate(base);
         Calendar now = getCal(base);
 
@@ -281,7 +282,24 @@ public class MatchTrigger extends IntervalTrigger {
      *
      * @return true if the operation could be made.
      */
-    private boolean setDayOfWeek (Calendar cal) {
+    private boolean setDayOfWeek (Calendar temp) {
+
+        /**
+        * The time is getting wrong when specials is added
+        * in this case when add weekday that time is bigger then
+        * time now is not scheduling the time
+        * Only way I found to fix is getting time now and set
+        * time from calendar and edit it
+        */
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.YEAR, temp.get(Calendar.YEAR));
+        cal.set(Calendar.MONTH, temp.get(Calendar.MONTH));
+        cal.set(Calendar.DAY_OF_MONTH, temp.get(Calendar.DAY_OF_MONTH));
+        cal.set(Calendar.AM_PM, temp.get(Calendar.AM_PM));
+        cal.set(Calendar.HOUR, temp.get(Calendar.HOUR));
+        cal.set(Calendar.MINUTE, temp.get(Calendar.MINUTE));
+        cal.set(Calendar.SECOND, temp.get(Calendar.SECOND));
+
         cal.setFirstDayOfWeek(Calendar.MONDAY);
         int day      = WEEKDAYS_REV[cal.get(DAY_OF_WEEK)];
         int month    = cal.get(Calendar.MONTH);
