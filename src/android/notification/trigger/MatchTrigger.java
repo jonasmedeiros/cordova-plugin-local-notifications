@@ -34,6 +34,8 @@ import static de.appplant.cordova.plugin.notification.trigger.DateTrigger.Unit.W
 import static de.appplant.cordova.plugin.notification.trigger.DateTrigger.Unit.YEAR;
 import static java.util.Calendar.*;
 
+import android.util.Log;
+
 /**
  * Trigger for date matching components.
  */
@@ -292,13 +294,30 @@ public class MatchTrigger extends IntervalTrigger {
         * time from calendar and edit it
         */
         Calendar cal = Calendar.getInstance();
-        cal.set(Calendar.YEAR, temp.get(Calendar.YEAR));
-        cal.set(Calendar.MONTH, temp.get(Calendar.MONTH));
-        cal.set(Calendar.DAY_OF_MONTH, temp.get(Calendar.DAY_OF_MONTH));
-        cal.set(Calendar.AM_PM, temp.get(Calendar.AM_PM));
-        cal.set(Calendar.HOUR, temp.get(Calendar.HOUR));
-        cal.set(Calendar.MINUTE, temp.get(Calendar.MINUTE));
-        cal.set(Calendar.SECOND, temp.get(Calendar.SECOND));
+        
+        if (matchers.get(0) != null) {
+            cal.set(Calendar.MINUTE, matchers.get(0));
+        } else {
+            cal.set(Calendar.MINUTE, 0);
+        }
+
+        if (matchers.get(1) != null) {
+            cal.set(Calendar.HOUR_OF_DAY, matchers.get(1));
+        } else {
+            cal.set(Calendar.HOUR_OF_DAY, 0);
+        }
+
+        if (matchers.get(2) != null) {
+            cal.set(Calendar.DAY_OF_MONTH, matchers.get(2));
+        }
+
+        if (matchers.get(3) != null) {
+            cal.set(Calendar.MONTH, matchers.get(3) - 1);
+        }
+
+        if (matchers.get(4) != null) {
+            cal.set(Calendar.YEAR, matchers.get(4));
+        }
 
         cal.setFirstDayOfWeek(Calendar.MONDAY);
         int day      = WEEKDAYS_REV[cal.get(DAY_OF_WEEK)];
@@ -331,6 +350,10 @@ public class MatchTrigger extends IntervalTrigger {
         //noinspection RedundantIfStatement
         if (matchers.get(4) != null && cal.get(Calendar.YEAR) != year)
             return false;
+
+        Log.d("specials ", "" + specials);
+        Log.d("matchers ", "" + matchers);
+        Log.d("cal.getTime() ", "Next trigger at: " + cal.getTime());
 
         return true;
     }
