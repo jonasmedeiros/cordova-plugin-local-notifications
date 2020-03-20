@@ -182,6 +182,7 @@ public final class Notification {
         do {
             Date date = request.getTriggerDate();
 
+            Log.d("local-notification request", "Next trigger at: " + request);
             Log.d("local-notification", "Next trigger at: " + date);
 
             if (date == null)
