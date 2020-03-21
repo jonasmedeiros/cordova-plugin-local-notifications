@@ -336,8 +336,7 @@ public class MatchTrigger extends IntervalTrigger {
                 return null;
         }
 
-        // because is sending messages per second lets keep only one second to send
-        cal.set(Calendar.SECOND, 59);
+        cal.set(Calendar.SECOND, 0);
         cal.set(DAY_OF_WEEK, specials.get(0));
 
         if (matchers.get(3) != null && cal.get(Calendar.MONTH) != month)
@@ -362,7 +361,7 @@ public class MatchTrigger extends IntervalTrigger {
      *
      * @return true if the operation could be made.
      */
-    private boolean setDayOfWeek (Calendar temp) {
+    private boolean setDayOfWeek (Calendar calc) {
 
         if (setDayOfWeekCal() == null) {
             return false;

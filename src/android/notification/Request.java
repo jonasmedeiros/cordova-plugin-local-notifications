@@ -146,7 +146,7 @@ public final class Request {
 
         long time = triggerDate.getTime();
 
-        if ((now.getTimeInMillis() - time) > 60000)
+        if ((now.getTimeInMillis() - time) > 1000)
             return null;
 
         if (time >= spec.optLong("before", time + 1))
