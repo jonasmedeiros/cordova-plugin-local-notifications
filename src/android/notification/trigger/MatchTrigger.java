@@ -243,6 +243,10 @@ public class MatchTrigger extends IntervalTrigger {
         if (specials.get(0) != null && !setDayOfWeek(cal))
             return null;
 
+        if (setDayOfWeek(cal)) {
+            return setDayOfWeekCal();
+        }
+
         return cal.getTime();
     }
 
@@ -280,19 +284,10 @@ public class MatchTrigger extends IntervalTrigger {
      * Set the day of the year but ensure that the calendar does point to a
      * date in future.
      *
-     * @param cal   The calendar to manipulate.
-     *
      * @return true if the operation could be made.
      */
-    private boolean setDayOfWeek (Calendar temp) {
+    private Date setDayOfWeekCal () {
 
-        /**
-        * The time is getting wrong when specials is added
-        * in this case when add weekday that time is bigger then
-        * time now is not scheduling the time
-        * Only way I found to fix is getting time now and set
-        * time from calendar and edit it
-        */
         Calendar cal = Calendar.getInstance();
         
         if (matchers.get(0) != null) {
@@ -326,7 +321,7 @@ public class MatchTrigger extends IntervalTrigger {
         int dayToSet = WEEKDAYS_REV[specials.get(0)];
 
         if (matchers.get(2) != null)
-            return false;
+            return null;
 
         if (day > dayToSet) {
             if (specials.get(2) == null) {
@@ -338,22 +333,39 @@ public class MatchTrigger extends IntervalTrigger {
             if (matchers.get(4) == null) {
                 cal.add(Calendar.YEAR, 1);
             } else
-                return false;
+                return null;
         }
 
         cal.set(Calendar.SECOND, 0);
         cal.set(DAY_OF_WEEK, specials.get(0));
 
         if (matchers.get(3) != null && cal.get(Calendar.MONTH) != month)
-            return false;
+            return null;
 
         //noinspection RedundantIfStatement
         if (matchers.get(4) != null && cal.get(Calendar.YEAR) != year)
-            return false;
+            return null;
 
         Log.d("specials ", "" + specials);
         Log.d("matchers ", "" + matchers);
         Log.d("cal.getTime() ", "Next trigger at: " + cal.getTime());
+
+        return cal.getTime();
+    }
+
+    /**
+     * Set the day of the year but ensure that the calendar does point to a
+     * date in future.
+     *
+     * @param cal   The calendar to manipulate.
+     *
+     * @return true if the operation could be made.
+     */
+    private boolean setDayOfWeek (Calendar temp) {
+
+        if (setDayOfWeekCal() == null) {
+            return false;
+        }
 
         return true;
     }
